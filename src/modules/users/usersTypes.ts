@@ -1,3 +1,12 @@
+type UserTsType = {
+  _id?: String;
+  id?: String;
+  firstName: String;
+  lastName: String;
+  password: String;
+  email: String;
+};
+
 type UserArgs = {
   id: String;
 };
@@ -14,4 +23,8 @@ type RegisterArgs = {
   email: String;
 };
 
-export { UserArgs, LoginArgs, RegisterArgs };
+type jwtObj = {
+  jwt: String | null;
+};
+
+export { UserTsType, UserArgs, LoginArgs, RegisterArgs, jwtObj };

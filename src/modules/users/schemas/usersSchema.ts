@@ -1,6 +1,6 @@
 const usersSchema = /* GraphQL */ `
   type User {
-    _id: ID!
+    id: ID!
     firstName: String
     lastName: String
     password: String

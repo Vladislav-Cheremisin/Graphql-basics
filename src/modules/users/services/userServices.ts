@@ -2,13 +2,19 @@ import axios from "axios";
 
 import jwtOps from "../usersJwtOps";
 import { envError, incorrectDataError } from "../../../errors";
-import { UserArgs, LoginArgs, RegisterArgs } from "../usersTypes";
+import {
+  UserTsType,
+  UserArgs,
+  LoginArgs,
+  RegisterArgs,
+  jwtObj,
+} from "../usersTypes";
 
 class UserServices {
   public register = async (
     _parent: undefined,
     args: RegisterArgs
-  ): Promise<Object> => {
+  ): Promise<UserTsType> => {
     try {
       const url = process.env.USERS_URL + `/register`;
 
@@ -22,7 +28,7 @@ class UserServices {
           })
         ).data;
 
-        return response;
+        return this.parseResponse(response);
       } else {
         throw envError;
       }
@@ -38,7 +44,7 @@ class UserServices {
   public login = async (
     _parent: undefined,
     args: LoginArgs
-  ): Promise<Object> => {
+  ): Promise<jwtObj> => {
     try {
       const url = process.env.USERS_URL + `/login`;
 
@@ -63,22 +69,34 @@ class UserServices {
         throw envError;
       }
     } catch (err) {
-      throw err;
+      if (err === envError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
     }
   };
 
   public getUser = async (
     _parent: undefined,
     args: UserArgs
-  ): Promise<Object> => {
+  ): Promise<UserTsType> => {
     try {
       const url = process.env.USERS_URL + `/${args.id}`;
       const response = await (await axios.get(url)).data;
 
-      return response;
+      return this.parseResponse(response);
     } catch (err) {
       throw incorrectDataError;
     }
+  };
+
+  private parseResponse = (res: UserTsType): UserTsType => {
+    const result = { ...res, id: res._id };
+
+    delete result._id;
+
+    return result;
   };
 }
 
