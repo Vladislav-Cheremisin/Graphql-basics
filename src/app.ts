@@ -1,11 +1,6 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 
-import usersData from "./modules/users/users";
-import artistsData from "./modules/artists/artists";
-
-const typeDefs = [usersData.typeDefs, artistsData.typeDefs];
-
-const resolvers = [usersData.resolvers, artistsData.resolvers];
+import { typeDefs, resolvers } from "./gatewaySchema";
 
 const server = new ApolloServer({
   typeDefs,

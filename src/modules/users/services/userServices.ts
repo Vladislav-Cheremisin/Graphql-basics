@@ -1,14 +1,9 @@
 import axios from "axios";
 
 import jwtOps from "../usersJwtOps";
+import { IdArgs } from "../../../generalTsTypes";
 import { envError, incorrectDataError } from "../../../errors";
-import {
-  UserTsType,
-  UserArgs,
-  LoginArgs,
-  RegisterArgs,
-  jwtObj,
-} from "../usersTypes";
+import { UserTsType, LoginArgs, RegisterArgs, jwtObj } from "../usersTsTypes";
 
 class UserServices {
   public register = async (
@@ -79,7 +74,7 @@ class UserServices {
 
   public getUser = async (
     _parent: undefined,
-    args: UserArgs
+    args: IdArgs
   ): Promise<UserTsType> => {
     try {
       const url = process.env.USERS_URL + `/${args.id}`;

@@ -7,10 +7,6 @@ type UserTsType = {
   email: String;
 };
 
-type UserArgs = {
-  id: String;
-};
-
 type LoginArgs = {
   email: String;
   password: String;
@@ -27,4 +23,4 @@ type jwtObj = {
   jwt: String | null;
 };
 
-export { UserTsType, UserArgs, LoginArgs, RegisterArgs, jwtObj };
+export { UserTsType, LoginArgs, RegisterArgs, jwtObj };
