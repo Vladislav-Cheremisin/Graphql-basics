@@ -5,7 +5,7 @@ class JwtOperations {
     this.jwt = null;
   }
 
-  public setJwtToken = (jwtToken: String) => {
+  public setJwtToken = (jwtToken: String): void => {
     this.jwt = jwtToken;
   };
 

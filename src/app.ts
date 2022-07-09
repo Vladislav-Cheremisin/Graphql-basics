@@ -1,10 +1,10 @@
 import { ApolloServer } from "apollo-server";
 
-import usersModel from "./modules/users/users.model";
+import usersData from "./modules/users/users";
 
-const typeDefs = [usersModel.typeDefs];
+const typeDefs = [usersData.typeDefs];
 
-const resolvers = [usersModel.resolvers];
+const resolvers = [usersData.resolvers];
 
 const server = new ApolloServer({
   typeDefs,

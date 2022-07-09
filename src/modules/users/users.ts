@@ -1,9 +1,9 @@
 import { usersSchema } from "./schemas/usersSchema";
 import { usersResolvers } from "./resolvers/usersResolvers";
 
-const usersModel = {
+const usersData = {
   typeDefs: usersSchema,
   resolvers: usersResolvers,
 };
 
-export default usersModel;
+export default usersData;
