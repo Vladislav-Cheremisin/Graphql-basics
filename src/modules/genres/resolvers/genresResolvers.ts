@@ -5,7 +5,9 @@ const genresResolvers = {
     genre: genresServices.getGenre,
     genres: genresServices.getGenres,
   },
-  Mutation: {},
+  Mutation: {
+    createGenre: genresServices.createGenre,
+  },
 };
 
 export { genresResolvers };

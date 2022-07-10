@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import jwtOps from "../../users/usersJwtOps";
 import { GenreTsType, GenresTsType } from "../genresTsTypes";
 
 import {
@@ -72,6 +73,41 @@ class GenresServices {
       }
     } catch (err) {
       throw err;
+    }
+  };
+
+  public createGenre = async (
+    _parent: undefined,
+    args: GenreTsType
+  ): Promise<GenreTsType> => {
+    try {
+      const url = process.env.GENRES_URL;
+
+      if (typeof url === "string") {
+        const token = jwtOps.getJwtToken();
+
+        if (!token) {
+          throw authorizationError;
+        }
+
+        const response = await (
+          await axios.post(url, args, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        ).data;
+
+        return this.parseResponse(response);
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      if (err !== envError && err !== authorizationError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
     }
   };
 
