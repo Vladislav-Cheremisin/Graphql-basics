@@ -1,7 +1,10 @@
 import genresServices from "../services/genresServices";
 
 const genresResolvers = {
-  Query: {},
+  Query: {
+    genre: genresServices.getGenre,
+    genres: genresServices.getGenres,
+  },
   Mutation: {},
 };
 

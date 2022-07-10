@@ -1,7 +1,11 @@
 import axios from "axios";
 
 import jwtOps from "../../users/usersJwtOps";
-import { IdArgs, DeleteInfoTsType } from "../../../generalTsTypes";
+import {
+  IdArgs,
+  PaginationArgs,
+  DeleteInfoTsType,
+} from "../../../generalTsTypes";
 import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
 import {
   incorrectDataError,
@@ -35,7 +39,7 @@ class ArtistsServices {
 
   public getArtists = async (
     _parent: undefined,
-    args: any
+    args: PaginationArgs
   ): Promise<ArtistsTsType> => {
     try {
       const url = process.env.ARTISTS_URL;
