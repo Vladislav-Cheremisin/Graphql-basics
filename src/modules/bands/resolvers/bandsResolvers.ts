@@ -8,6 +8,7 @@ const bandsResolvers = {
   Mutation: {
     createBand: bandsServices.createBand,
     updateBand: bandsServices.updateBand,
+    deleteBand: bandsServices.deleteBand,
   },
 };
 

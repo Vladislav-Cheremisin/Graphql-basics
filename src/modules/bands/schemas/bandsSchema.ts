@@ -45,6 +45,8 @@ const bandsSchema = /* GraphQL */ `
       website: String
       genresIds: [String]
     ): Band
+
+    deleteBand(id: ID!): DeleteInfo
   }
 `;
 
