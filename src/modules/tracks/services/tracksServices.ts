@@ -14,6 +14,7 @@ import {
   envError,
   incorrectDataError,
 } from "../../../errors";
+import albumsServices from "../../albums/services/albumsServices";
 class TracksServices {
   public getTrack = async (
     _parent: undefined,
@@ -29,10 +30,12 @@ class TracksServices {
         result.genres = await this.getAdditionalGenresData(response);
         result.bands = await this.getAdditionalBandsData(response);
         result.artists = await this.getAdditionalArtistData(response);
+        result.album = await this.getAdditionalAlbumData(response);
 
         delete result.genresIds;
         delete result.bandsIds;
         delete result.artistsIds;
+        delete result.albumId;
 
         return this.parseResponse(result);
       } else {
@@ -78,10 +81,14 @@ class TracksServices {
           correctTracks[i].artists = await this.getAdditionalArtistData(
             correctTracks[i]
           );
+          correctTracks[i].album = await this.getAdditionalAlbumData(
+            correctTracks[i]
+          );
 
           delete correctTracks[i].genresIds;
           delete correctTracks[i].bandsIds;
           delete correctTracks[i].artistsIds;
+          delete correctTracks[i].albumId;
         }
 
         const result: TracksTsType = {
@@ -127,10 +134,12 @@ class TracksServices {
         result.bands = await this.getAdditionalBandsData(result);
         result.artists = await this.getAdditionalArtistData(result);
         result.genres = await this.getAdditionalGenresData(result);
+        result.album = await this.getAdditionalAlbumData(result);
 
         delete result.bandsIds;
         delete result.artistsIds;
         delete result.genresIds;
+        delete result.albumId;
 
         return this.parseResponse(result);
       } else {
@@ -171,10 +180,12 @@ class TracksServices {
         result.bands = await this.getAdditionalBandsData(result);
         result.artists = await this.getAdditionalArtistData(result);
         result.genres = await this.getAdditionalGenresData(result);
+        result.album = await this.getAdditionalAlbumData(result);
 
         delete result.bandsIds;
         delete result.artistsIds;
         delete result.genresIds;
+        delete result.albumId;
 
         return this.parseResponse(result);
       } else {
@@ -221,6 +232,27 @@ class TracksServices {
         throw err;
       }
     }
+  };
+
+  private getAdditionalAlbumData = async (track: TrackTsType): Promise<any> => {
+    try {
+      if (track.albumId) {
+        const albumId = track.albumId;
+
+        if (albumId) {
+          const url = process.env.ALBUMS_URL + `/${albumId}`;
+          const response = await (await axios.get(url)).data;
+
+          if (response) {
+            const correctAlbum = albumsServices.getAlbum(undefined, {
+              id: albumId,
+            });
+
+            return correctAlbum;
+          }
+        }
+      }
+    } catch (err) {}
   };
 
   private getAdditionalBandsData = async (track: TrackTsType): Promise<any> => {

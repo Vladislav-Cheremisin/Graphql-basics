@@ -1,8 +1,11 @@
+import { AlbumTsType } from "../albums/albumsTsTypes";
+
 type TrackTsType = {
   id?: String;
   _id?: String;
   title?: String;
-  album?: String; // Here will be album
+  album?: AlbumTsType;
+  albumId?: String;
   artists?: [Object];
   artistsIds: [String];
   bands: [Object];
