@@ -1,12 +1,14 @@
 import axios from "axios";
 
 import jwtOps from "../../users/usersJwtOps";
+import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
+
 import {
   IdArgs,
   PaginationArgs,
   DeleteInfoTsType,
 } from "../../../generalTsTypes";
-import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
+
 import {
   incorrectDataError,
   envError,

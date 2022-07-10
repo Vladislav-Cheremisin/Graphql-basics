@@ -15,6 +15,17 @@ const bandsSchema = /* GraphQL */ `
     website: String
     genres: [Genre]
   }
+
+  type Bands {
+    items: [Band]
+    limit: Int
+    offset: Int
+    total: Int
+  }
+
+  type Query {
+    band(id: ID!): Band
+  }
 `;
 
 export { bandsSchema };

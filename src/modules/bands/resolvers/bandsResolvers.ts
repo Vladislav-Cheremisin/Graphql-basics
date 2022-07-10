@@ -1,7 +1,9 @@
 import bandsServices from "../services/bandsServices";
 
 const bandsResolvers = {
-  Query: {},
+  Query: {
+    band: bandsServices.getBand,
+  },
   Mutation: {},
 };
 
