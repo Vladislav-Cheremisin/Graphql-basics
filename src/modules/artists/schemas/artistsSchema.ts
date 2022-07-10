@@ -22,6 +22,19 @@ const artistsSchema = /* GraphQL */ `
     artist(id: ID!): Artist
     artists(limit: Int = 5, offset: Int = 0): Artists
   }
+
+  type Mutation {
+    createArtist(
+      firstName: String
+      secondName: String
+      country: String
+      middleName: String = null
+      birthDate: String = null
+      birthPlace: String = null
+      bands: [String] = []
+      instruments: [String] = []
+    ): Artist
+  }
 `;
 
 export { artistsSchema };

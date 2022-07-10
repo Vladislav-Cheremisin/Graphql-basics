@@ -6,4 +6,8 @@ const incorrectDataError = new Error(
   "Entered data was incorrect, please try again with using correct request data"
 );
 
-export { envError, incorrectDataError };
+const authorizationError = new Error(
+  "This operation available only for authorized users! Please login and try again"
+);
+
+export { envError, incorrectDataError, authorizationError };

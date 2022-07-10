@@ -5,7 +5,9 @@ const artistsResolvers = {
     artist: artistsServices.getArtist,
     artists: artistsServices.getArtists,
   },
-  Mutation: {},
+  Mutation: {
+    createArtist: artistsServices.createArtist,
+  },
 };
 
 export { artistsResolvers };

@@ -1,8 +1,13 @@
 import axios from "axios";
 
+import jwtOps from "../../users/usersJwtOps";
 import { IdArgs } from "../../../generalTsTypes";
-import { incorrectDataError, envError } from "../../../errors";
 import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
+import {
+  incorrectDataError,
+  envError,
+  authorizationError,
+} from "../../../errors";
 
 class ArtistsServices {
   public getArtist = async (
@@ -53,6 +58,46 @@ class ArtistsServices {
       }
     } catch (err) {
       throw err;
+    }
+  };
+
+  createArtist = async (
+    _parent: undefined,
+    args: ArtistTsType
+  ): Promise<ArtistTsType> => {
+    try {
+      const url = process.env.ARTISTS_URL;
+
+      if (typeof url === "string") {
+        const token = jwtOps.getJwtToken();
+
+        if (!token) {
+          throw authorizationError;
+        }
+
+        const response = await (
+          await axios.post(url, args, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        ).data;
+
+        const result = { ...response };
+
+        result.bands = result.bandsIds; // Here must be bands logic
+        delete result.bandsIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      if (err !== envError && err !== authorizationError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
     }
   };
 
