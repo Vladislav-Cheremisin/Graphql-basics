@@ -5,7 +5,9 @@ const tracksResolvers = {
     track: tracksServices.getTrack,
     tracks: tracksServices.getTracks,
   },
-  Mutation: {},
+  Mutation: {
+    createTrack: tracksServices.createTrack,
+  },
 };
 
 export { tracksResolvers };

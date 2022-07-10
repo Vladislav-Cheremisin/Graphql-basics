@@ -13,6 +13,7 @@ import {
   envError,
   incorrectDataError,
 } from "../../../errors";
+import jwtOps from "../../users/usersJwtOps";
 class TracksServices {
   public getTrack = async (
     _parent: undefined,
@@ -96,6 +97,51 @@ class TracksServices {
       }
     } catch (err) {
       throw err;
+    }
+  };
+
+  public createTrack = async (
+    _parent: undefined,
+    args: TrackTsType
+  ): Promise<TrackTsType> => {
+    try {
+      const url = process.env.TRACKS_URL;
+
+      if (typeof url === "string") {
+        const token = jwtOps.getJwtToken();
+
+        if (!token) {
+          throw authorizationError;
+        }
+
+        const response = await (
+          await axios.post(url, args, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        ).data;
+
+        const result = { ...response };
+
+        result.bands = await this.getAdditionalBandsData(result);
+        result.artists = await this.getAdditionalArtistData(result);
+        result.genres = await this.getAdditionalGenresData(result);
+
+        delete result.bandsIds;
+        delete result.artistsIds;
+        delete result.genresIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      if (err !== envError && err !== authorizationError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
     }
   };
 

@@ -21,6 +21,18 @@ const tracksSchema = /* GraphQL */ `
     track(id: ID!): Track
     tracks(limit: Int = 5, offset: Int = 0): Tracks
   }
+
+  type Mutation {
+    createTrack(
+      title: String!
+      albumId: String
+      artistsIds: [String]
+      bandsIds: [String]
+      duration: Int
+      released: Int
+      genresIds: [String]
+    ): Track
+  }
 `;
 
 export { tracksSchema };
