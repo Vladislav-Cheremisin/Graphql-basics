@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import jwtOps from "../../users/usersJwtOps";
+import bandsServices from "../../bands/services/bandsServices";
 import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
 
 import {
@@ -26,7 +27,13 @@ class ArtistsServices {
       const response = await (await axios.get(url)).data;
 
       if (response) {
-        return this.parseResponse(response);
+        const result = { ...response };
+
+        result.bands = await this.getAdditionalData(result);
+
+        delete result.bandsIds;
+
+        return this.parseResponse(result);
       } else {
         throw wrongIdError;
       }
@@ -59,6 +66,14 @@ class ArtistsServices {
         const correctArtists = response.items.map((artist: ArtistTsType) =>
           this.parseResponse(artist)
         );
+
+        for (let i = 0; i < correctArtists.length; i++) {
+          correctArtists[i].bands = await this.getAdditionalData(
+            correctArtists[i]
+          );
+
+          delete correctArtists[i].bandsIds;
+        }
 
         const result: ArtistsTsType = {
           items: correctArtists,
@@ -100,7 +115,7 @@ class ArtistsServices {
 
         const result = { ...response };
 
-        result.bands = result.bandsIds; // Here must be bands logic
+        result.bands = await this.getAdditionalData(result);
         delete result.bandsIds;
 
         return this.parseResponse(result);
@@ -139,7 +154,7 @@ class ArtistsServices {
       if (response) {
         const result = { ...response };
 
-        result.bands = result.bandsIds; // Here must be bands logic
+        result.bands = await this.getAdditionalData(result);
         delete result.bandsIds;
 
         return this.parseResponse(result);
@@ -187,6 +202,26 @@ class ArtistsServices {
         throw err;
       }
     }
+  };
+
+  private getAdditionalData = async (artist: ArtistTsType): Promise<any> => {
+    try {
+      if (artist.bandsIds) {
+        const result = [];
+        const bandsIds = artist.bandsIds;
+
+        for (let i = 0; i < bandsIds.length; i++) {
+          const url = process.env.BANDS_URL + `/${bandsIds[i]}`;
+          const response = await (await axios.get(url)).data;
+
+          if (response) {
+            result.push(bandsServices.parseResponse(response));
+          }
+        }
+
+        return result;
+      }
+    } catch (err) {}
   };
 
   private parseResponse = (res: ArtistTsType): ArtistTsType => {

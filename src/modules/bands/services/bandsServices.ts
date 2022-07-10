@@ -15,6 +15,7 @@ import {
   authorizationError,
   wrongIdError,
 } from "../../../errors";
+import { GenreTsType } from "../../genres/genresTsTypes";
 
 class BandsServices {
   public getBand = async (
@@ -28,17 +29,7 @@ class BandsServices {
       if (response) {
         const result = { ...response };
 
-        result.genres = [];
-
-        if (result.genresIds.length > 0) {
-          result.genresIds.forEach(async (id: String) => {
-            try {
-              const genre = genresServices.getGenre(undefined, { id: id });
-
-              result.genres.push(genre);
-            } catch (err) {}
-          });
-        }
+        result.genres = await this.getAdditionalData(response);
 
         delete result.genresIds;
 
@@ -55,7 +46,27 @@ class BandsServices {
     }
   };
 
-  private parseResponse = (res: BandTsType): BandTsType => {
+  private getAdditionalData = async (band: BandTsType): Promise<any> => {
+    try {
+      if (band.genresIds) {
+        const result = [];
+        const genresIds = band.genresIds;
+
+        for (let i = 0; i < genresIds.length; i++) {
+          const url = process.env.GENRES_URL + `/${genresIds[i]}`;
+          const response = await (await axios.get(url)).data;
+
+          if (response) {
+            result.push(genresServices.parseResponse(response));
+          }
+        }
+
+        return result;
+      }
+    } catch (err) {}
+  };
+
+  public parseResponse = (res: BandTsType): BandTsType => {
     const result = { ...res, id: res._id };
 
     delete result._id;

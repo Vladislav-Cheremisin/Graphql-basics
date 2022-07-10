@@ -7,8 +7,8 @@ type ArtistTsType = {
   birthDate?: String;
   birthPlace?: String;
   country?: String;
-  bands?: [String] | [Object];
-  bandsIds?: [String] | [Object];
+  bands?: [String] | [Object] | [];
+  bandsIds?: [String];
   instruments?: [String];
 };
 

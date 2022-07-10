@@ -179,7 +179,7 @@ class GenresServices {
     }
   };
 
-  private parseResponse = (res: GenreTsType): GenreTsType => {
+  public parseResponse = (res: GenreTsType): GenreTsType => {
     const result = { ...res, id: res._id };
 
     delete result._id;

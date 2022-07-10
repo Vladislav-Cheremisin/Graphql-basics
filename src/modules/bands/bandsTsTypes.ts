@@ -16,6 +16,7 @@ type BandTsType = {
   members?: [MemberTsType];
   website?: String;
   genres?: [GenreTsType];
+  genresIds?: [String];
 };
 
 type BandsTsType = {
