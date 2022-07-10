@@ -4,7 +4,8 @@
   "description": "Graphql basics task for NodeJs course in RSSchool",
   "main": "index.ts",
   "scripts": {
-    "start:dev": "nodemon"
+    "start:dev": "nodemon",
+    "start": "ts-node index.ts"
   },
   "repository": {
     "type": "git",
