@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { IdArgs } from "../../../generalTsTypes";
+import { DeleteInfoTsType, IdArgs } from "../../../generalTsTypes";
 import { PaginationArgs } from "../../../generalTsTypes";
 import { TrackTsType, TracksTsType } from "../tracksTsTypes";
 import genresServices from "../../genres/services/genresServices";
@@ -185,6 +185,40 @@ class TracksServices {
         throw err;
       } else {
         throw incorrectDataError;
+      }
+    }
+  };
+
+  public deleteTrack = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<DeleteInfoTsType> => {
+    try {
+      const url = process.env.TRACKS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response.deletedCount === 0) {
+        throw wrongIdError;
+      } else {
+        return response;
+      }
+    } catch (err) {
+      if (err !== authorizationError && err !== wrongIdError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
       }
     }
   };

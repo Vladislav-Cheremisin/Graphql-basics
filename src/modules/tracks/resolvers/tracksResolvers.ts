@@ -8,6 +8,7 @@ const tracksResolvers = {
   Mutation: {
     createTrack: tracksServices.createTrack,
     updateTrack: tracksServices.updateTrack,
+    deleteTrack: tracksServices.deleteTrack,
   },
 };
 

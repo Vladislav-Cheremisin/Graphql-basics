@@ -43,6 +43,8 @@ const tracksSchema = /* GraphQL */ `
       released: Int
       genresIds: [String]
     ): Track
+
+    deleteTrack(id: ID!): DeleteInfo
   }
 `;
 
