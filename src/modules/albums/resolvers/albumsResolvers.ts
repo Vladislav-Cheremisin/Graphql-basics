@@ -1,7 +1,10 @@
 import albumsServices from "../services/albumsServices";
 
 const albumsResolvers = {
-  Query: {},
+  Query: {
+    album: albumsServices.getAlbum,
+    albums: albumsServices.getAlbums,
+  },
   Mutation: {},
 };
 

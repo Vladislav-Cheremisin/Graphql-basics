@@ -5,13 +5,25 @@ import { TrackTsType } from "../tracks/tracksTsTypes";
 
 type AlbumTsType = {
   id?: String;
+  _id?: String;
   name?: String;
   released?: number;
   artists?: [ArtistTsType];
+  artistsIds?: [String];
   bands?: [BandTsType];
+  bandsIds?: [String];
   tracks?: [TrackTsType];
+  tracksIds?: [String];
   genres?: [GenreTsType];
+  genresIds?: [String];
   image?: String;
 };
 
-export { AlbumTsType };
+type AlbumsTsType = {
+  items: [AlbumTsType];
+  limit: number;
+  offset: number;
+  total: number;
+};
+
+export { AlbumTsType, AlbumsTsType };

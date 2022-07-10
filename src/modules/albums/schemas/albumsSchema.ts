@@ -9,6 +9,18 @@ const albumsSchema = /* GraphQL */ `
     genres: [Genre]
     image: String
   }
+
+  type Albums {
+    items: [Album]
+    limit: Int
+    offset: Int
+    total: Int
+  }
+
+  type Query {
+    album(id: ID!): Album
+    albums(limit: Int = 5, offset: Int = 0): Albums
+  }
 `;
 
 export { albumsSchema };

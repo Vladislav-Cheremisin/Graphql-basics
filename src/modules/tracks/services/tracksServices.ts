@@ -6,6 +6,7 @@ import { TrackTsType, TracksTsType } from "../tracksTsTypes";
 import genresServices from "../../genres/services/genresServices";
 import bandsServices from "../../bands/services/bandsServices";
 import artistsServices from "../../artists/services/artistsServices";
+import jwtOps from "../../users/usersJwtOps";
 
 import {
   wrongIdError,
@@ -13,7 +14,6 @@ import {
   envError,
   incorrectDataError,
 } from "../../../errors";
-import jwtOps from "../../users/usersJwtOps";
 class TracksServices {
   public getTrack = async (
     _parent: undefined,
