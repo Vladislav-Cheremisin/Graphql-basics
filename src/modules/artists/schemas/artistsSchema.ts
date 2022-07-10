@@ -18,6 +18,11 @@ const artistsSchema = /* GraphQL */ `
     total: Int
   }
 
+  type DeleteInfo {
+    acknowledged: Boolean
+    deletedCount: Int
+  }
+
   type Query {
     artist(id: ID!): Artist
     artists(limit: Int = 5, offset: Int = 0): Artists
@@ -25,15 +30,17 @@ const artistsSchema = /* GraphQL */ `
 
   type Mutation {
     createArtist(
-      firstName: String
-      secondName: String
-      country: String
+      firstName: String!
+      secondName: String!
+      country: String!
       middleName: String = null
       birthDate: String = null
       birthPlace: String = null
       bands: [String] = []
       instruments: [String] = []
     ): Artist
+
+    deleteArtist(id: ID!): DeleteInfo
   }
 `;
 

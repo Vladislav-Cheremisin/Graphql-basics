@@ -2,7 +2,7 @@ import axios from "axios";
 
 import jwtOps from "../usersJwtOps";
 import { IdArgs } from "../../../generalTsTypes";
-import { envError, incorrectDataError } from "../../../errors";
+import { envError, incorrectDataError, wrongIdError } from "../../../errors";
 import { UserTsType, LoginArgs, RegisterArgs, jwtObj } from "../usersTsTypes";
 
 class UserServices {
@@ -80,9 +80,17 @@ class UserServices {
       const url = process.env.USERS_URL + `/${args.id}`;
       const response = await (await axios.get(url)).data;
 
-      return this.parseResponse(response);
+      if (response) {
+        return this.parseResponse(response);
+      } else {
+        throw wrongIdError;
+      }
     } catch (err) {
-      throw incorrectDataError;
+      if (err !== wrongIdError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
     }
   };
 

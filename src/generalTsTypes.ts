@@ -2,4 +2,9 @@ type IdArgs = {
   id: String;
 };
 
-export { IdArgs };
+type DeleteInfoTsType = {
+  acknowledged: Boolean;
+  deletedCount: number;
+};
+
+export { IdArgs, DeleteInfoTsType };

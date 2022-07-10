@@ -1,12 +1,13 @@
 import axios from "axios";
 
 import jwtOps from "../../users/usersJwtOps";
-import { IdArgs } from "../../../generalTsTypes";
+import { IdArgs, DeleteInfoTsType } from "../../../generalTsTypes";
 import { ArtistTsType, ArtistsTsType } from "../artistsTsTypes";
 import {
   incorrectDataError,
   envError,
   authorizationError,
+  wrongIdError,
 } from "../../../errors";
 
 class ArtistsServices {
@@ -18,9 +19,17 @@ class ArtistsServices {
       const url = process.env.ARTISTS_URL + `/${args.id}`;
       const response = await (await axios.get(url)).data;
 
-      return this.parseResponse(response);
+      if (response) {
+        return this.parseResponse(response);
+      } else {
+        throw wrongIdError;
+      }
     } catch (err) {
-      throw incorrectDataError;
+      if (err !== wrongIdError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
     }
   };
 
@@ -61,7 +70,7 @@ class ArtistsServices {
     }
   };
 
-  createArtist = async (
+  public createArtist = async (
     _parent: undefined,
     args: ArtistTsType
   ): Promise<ArtistTsType> => {
@@ -95,6 +104,40 @@ class ArtistsServices {
     } catch (err) {
       if (err !== envError && err !== authorizationError) {
         throw incorrectDataError;
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  public deleteArtist = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<DeleteInfoTsType> => {
+    try {
+      const url = process.env.ARTISTS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response.deletedCount === 0) {
+        throw wrongIdError;
+      } else {
+        return response;
+      }
+    } catch (err) {
+      if (err !== authorizationError && err !== wrongIdError) {
+        throw envError;
       } else {
         throw err;
       }

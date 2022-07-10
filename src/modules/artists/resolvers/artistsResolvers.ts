@@ -7,6 +7,7 @@ const artistsResolvers = {
   },
   Mutation: {
     createArtist: artistsServices.createArtist,
+    deleteArtist: artistsServices.deleteArtist,
   },
 };
 
