@@ -5,7 +5,11 @@ const albumsResolvers = {
     album: albumsServices.getAlbum,
     albums: albumsServices.getAlbums,
   },
-  Mutation: {},
+  Mutation: {
+    createAlbum: albumsServices.createAlbum,
+    updateAlbum: albumsServices.updateAlbum,
+    deleteAlbum: albumsServices.deleteAlbum,
+  },
 };
 
 export { albumsResolvers };

@@ -21,6 +21,31 @@ const albumsSchema = /* GraphQL */ `
     album(id: ID!): Album
     albums(limit: Int = 5, offset: Int = 0): Albums
   }
+
+  type Mutation {
+    createAlbum(
+      name: String!
+      released: Int!
+      artistsIds: [String]
+      bandsIds: [String]
+      trackIds: [String]
+      genresIds: [String]
+      image: String
+    ): Album
+
+    updateAlbum(
+      id: ID!
+      name: String
+      released: Int
+      artistsIds: [String]
+      bandsIds: [String]
+      trackIds: [String]
+      genresIds: [String]
+      image: String
+    ): Album
+
+    deleteAlbum(id: ID!): DeleteInfo
+  }
 `;
 
 export { albumsSchema };

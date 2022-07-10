@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import jwtOps from "../../users/usersJwtOps";
 import artistsServices from "../../artists/services/artistsServices";
 import bandsServices from "../../bands/services/bandsServices";
 import genresServices from "../../genres/services/genresServices";
@@ -12,7 +13,12 @@ import {
   envError,
   incorrectDataError,
 } from "../../../errors";
-import { IdArgs, PaginationArgs } from "../../../generalTsTypes";
+
+import {
+  DeleteInfoTsType,
+  IdArgs,
+  PaginationArgs,
+} from "../../../generalTsTypes";
 
 class AlbumsServices {
   public getAlbum = async (
@@ -34,7 +40,7 @@ class AlbumsServices {
         delete result.genresIds;
         delete result.bandsIds;
         delete result.artistsIds;
-        delete result.tracksIds;
+        delete result.trackIds;
 
         return this.parseResponse(result);
       } else {
@@ -87,7 +93,7 @@ class AlbumsServices {
           delete correctAlbums[i].genresIds;
           delete correctAlbums[i].bandsIds;
           delete correctAlbums[i].artistsIds;
-          delete correctAlbums[i].tracksIds;
+          delete correctAlbums[i].trackIds;
         }
 
         const result: AlbumsTsType = {
@@ -106,21 +112,148 @@ class AlbumsServices {
     }
   };
 
+  public createAlbum = async (
+    _parent: undefined,
+    args: AlbumTsType
+  ): Promise<AlbumTsType> => {
+    try {
+      const url = process.env.ALBUMS_URL;
+
+      if (typeof url === "string") {
+        const token = jwtOps.getJwtToken();
+
+        if (!token) {
+          throw authorizationError;
+        }
+
+        const response = await (
+          await axios.post(url, args, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        ).data;
+
+        const result = { ...response };
+
+        result.bands = await this.getAdditionalBandsData(result);
+        result.artists = await this.getAdditionalArtistData(result);
+        result.genres = await this.getAdditionalGenresData(result);
+        result.tracks = await this.getAdditionalTracksData(result);
+
+        delete result.bandsIds;
+        delete result.artistsIds;
+        delete result.genresIds;
+        delete result.trackIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      if (err !== envError && err !== authorizationError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  public updateAlbum = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<AlbumTsType> => {
+    try {
+      const url = process.env.ALBUMS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.put(url, args, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response) {
+        const result = { ...response };
+
+        result.bands = await this.getAdditionalBandsData(result);
+        result.artists = await this.getAdditionalArtistData(result);
+        result.genres = await this.getAdditionalGenresData(result);
+        result.tracks = await this.getAdditionalTracksData(result);
+
+        delete result.bandsIds;
+        delete result.artistsIds;
+        delete result.genresIds;
+        delete result.trackIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw wrongIdError;
+      }
+    } catch (err) {
+      if (err === authorizationError || err === wrongIdError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
+    }
+  };
+
+  public deleteAlbum = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<DeleteInfoTsType> => {
+    try {
+      const url = process.env.ALBUMS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response.deletedCount === 0) {
+        throw wrongIdError;
+      } else {
+        return response;
+      }
+    } catch (err) {
+      if (err !== authorizationError && err !== wrongIdError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
+    }
+  };
+
   private getAdditionalTracksData = async (
     album: AlbumTsType
   ): Promise<any> => {
     try {
-      if (album.tracksIds) {
+      if (album.trackIds) {
         const result = [];
-        const tracksIds = album.tracksIds;
+        const trackIds = album.trackIds;
 
-        for (let i = 0; i < tracksIds.length; i++) {
-          const url = process.env.BANDS_URL + `/${tracksIds[i]}`;
+        for (let i = 0; i < trackIds.length; i++) {
+          const url = process.env.TRACKS_URL + `/${trackIds[i]}`;
           const response = await (await axios.get(url)).data;
 
           if (response) {
             const correctBand = await tracksServices.getTrack(undefined, {
-              id: tracksIds[i],
+              id: trackIds[i],
             });
 
             result.push(correctBand);

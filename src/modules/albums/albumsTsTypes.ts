@@ -13,7 +13,7 @@ type AlbumTsType = {
   bands?: [BandTsType];
   bandsIds?: [String];
   tracks?: [TrackTsType];
-  tracksIds?: [String];
+  trackIds?: [String];
   genres?: [GenreTsType];
   genresIds?: [String];
   image?: String;
