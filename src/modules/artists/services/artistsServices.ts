@@ -180,7 +180,7 @@ class ArtistsServices {
       }
     } catch (err) {
       if (err !== authorizationError && err !== wrongIdError) {
-        throw envError;
+        throw incorrectDataError;
       } else {
         throw err;
       }

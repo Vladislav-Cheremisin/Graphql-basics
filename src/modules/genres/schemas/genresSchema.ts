@@ -34,6 +34,8 @@ const genresSchema = /* GraphQL */ `
       description: String
       country: String
     ): Genre
+
+    deleteGenre(id: ID!): DeleteInfo
   }
 `;
 

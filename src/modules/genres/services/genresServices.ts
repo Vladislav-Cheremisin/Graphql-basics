@@ -145,6 +145,40 @@ class GenresServices {
     }
   };
 
+  public deleteGenre = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<DeleteInfoTsType> => {
+    try {
+      const url = process.env.GENRES_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.delete(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response.deletedCount === 0) {
+        throw wrongIdError;
+      } else {
+        return response;
+      }
+    } catch (err) {
+      if (err !== authorizationError && err !== wrongIdError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
+    }
+  };
+
   private parseResponse = (res: GenreTsType): GenreTsType => {
     const result = { ...res, id: res._id };
 
