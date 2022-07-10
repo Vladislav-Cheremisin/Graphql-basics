@@ -110,6 +110,45 @@ class ArtistsServices {
     }
   };
 
+  public updateArtist = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<ArtistTsType> => {
+    try {
+      const url = process.env.ARTISTS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.put(url, args, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response) {
+        const result = { ...response };
+
+        result.bands = result.bandsIds; // Here must be bands logic
+        delete result.bandsIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw wrongIdError;
+      }
+    } catch (err) {
+      if (err === authorizationError || err === wrongIdError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
+    }
+  };
+
   public deleteArtist = async (
     _parent: undefined,
     args: IdArgs

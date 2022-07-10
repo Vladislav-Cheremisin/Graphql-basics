@@ -33,11 +33,23 @@ const artistsSchema = /* GraphQL */ `
       firstName: String!
       secondName: String!
       country: String!
-      middleName: String = null
-      birthDate: String = null
-      birthPlace: String = null
-      bands: [String] = []
-      instruments: [String] = []
+      middleName: String
+      birthDate: String
+      birthPlace: String
+      bandsIds: [String]
+      instruments: [String]
+    ): Artist
+
+    updateArtist(
+      id: ID!
+      firstName: String
+      secondName: String
+      country: String
+      middleName: String
+      birthDate: String
+      birthPlace: String
+      bandsIds: [String]
+      instruments: [String]
     ): Artist
 
     deleteArtist(id: ID!): DeleteInfo

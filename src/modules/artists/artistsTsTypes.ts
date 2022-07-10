@@ -1,13 +1,14 @@
 type ArtistTsType = {
   id?: String;
   _id?: String;
-  firstName: String;
-  secondName: String;
+  firstName?: String;
+  secondName?: String;
   middleName?: String;
   birthDate?: String;
   birthPlace?: String;
-  country: String;
+  country?: String;
   bands?: [String] | [Object];
+  bandsIds?: [String] | [Object];
   instruments?: [String];
 };
 
