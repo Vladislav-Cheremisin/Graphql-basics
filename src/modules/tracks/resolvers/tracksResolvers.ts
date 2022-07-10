@@ -1,7 +1,9 @@
 import tracksServices from "../services/tracksServices";
 
 const tracksResolvers = {
-  Query: {},
+  Query: {
+    track: tracksServices.getTrack,
+  },
   Mutation: {},
 };
 

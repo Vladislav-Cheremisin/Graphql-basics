@@ -9,6 +9,10 @@ const tracksSchema = /* GraphQL */ `
     released: Int
     genres: [Genre]
   }
+
+  type Query {
+    track(id: ID!): Track
+  }
 `;
 
 export { tracksSchema };

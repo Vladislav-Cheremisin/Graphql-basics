@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import jwtOps from "../../users/usersJwtOps";
-import { BandTsType, BandsTsType, MemberTsType } from "../bandsTsTypes";
+import { BandTsType, BandsTsType } from "../bandsTsTypes";
 import genresServices from "../../genres/services/genresServices";
 
 import {
@@ -16,7 +16,7 @@ import {
   authorizationError,
   wrongIdError,
 } from "../../../errors";
-import { GenreTsType } from "../../genres/genresTsTypes";
+
 import artistsServices from "../../artists/services/artistsServices";
 
 class BandsServices {
