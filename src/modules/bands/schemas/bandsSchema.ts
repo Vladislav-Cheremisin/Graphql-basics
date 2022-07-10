@@ -27,6 +27,16 @@ const bandsSchema = /* GraphQL */ `
     band(id: ID!): Band
     bands(limit: Int = 5, offset: Int = 0): Bands
   }
+
+  type Mutation {
+    createBand(
+      name: String!
+      origin: String
+      membersIds: [String]
+      website: String
+      genresIds: [String]
+    ): Band
+  }
 `;
 
 export { bandsSchema };

@@ -228,7 +228,7 @@ class ArtistsServices {
     } catch (err) {}
   };
 
-  private parseResponse = (res: ArtistTsType): ArtistTsType => {
+  public parseResponse = (res: ArtistTsType): ArtistTsType => {
     const result = { ...res, id: res._id };
 
     delete result._id;

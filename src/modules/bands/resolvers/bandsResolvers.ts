@@ -5,7 +5,9 @@ const bandsResolvers = {
     band: bandsServices.getBand,
     bands: bandsServices.getBands,
   },
-  Mutation: {},
+  Mutation: {
+    createBand: bandsServices.createBand,
+  },
 };
 
 export { bandsResolvers };

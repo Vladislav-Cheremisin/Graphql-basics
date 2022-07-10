@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import jwtOps from "../../users/usersJwtOps";
 import { BandTsType, BandsTsType, MemberTsType } from "../bandsTsTypes";
 import genresServices from "../../genres/services/genresServices";
 
@@ -16,6 +17,7 @@ import {
   wrongIdError,
 } from "../../../errors";
 import { GenreTsType } from "../../genres/genresTsTypes";
+import artistsServices from "../../artists/services/artistsServices";
 
 class BandsServices {
   public getBand = async (
@@ -29,7 +31,7 @@ class BandsServices {
       if (response) {
         const result = { ...response };
 
-        result.genres = await this.getAdditionalData(response);
+        result.genres = await this.getAdditionalGenresData(response);
 
         delete result.genresIds;
 
@@ -68,7 +70,7 @@ class BandsServices {
         );
 
         for (let i = 0; i < correctArtists.length; i++) {
-          correctArtists[i].genres = await this.getAdditionalData(
+          correctArtists[i].genres = await this.getAdditionalGenresData(
             correctArtists[i]
           );
 
@@ -91,7 +93,53 @@ class BandsServices {
     }
   };
 
-  private getAdditionalData = async (band: BandTsType): Promise<any> => {
+  public createBand = async (
+    _parent: undefined,
+    args: BandTsType
+  ): Promise<BandTsType> => {
+    try {
+      const url = process.env.BANDS_URL;
+
+      if (typeof url === "string") {
+        const token = jwtOps.getJwtToken();
+
+        if (!token) {
+          throw authorizationError;
+        }
+
+        const correctArgs = { ...args };
+
+        correctArgs.members = await this.getAdditionalMembersData(correctArgs);
+
+        delete correctArgs.membersIds;
+
+        const response = await (
+          await axios.post(url, correctArgs, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        ).data;
+
+        const result = { ...response };
+
+        result.genres = await this.getAdditionalGenresData(result);
+        delete result.genresIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      if (err !== envError && err !== authorizationError) {
+        throw incorrectDataError;
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  private getAdditionalGenresData = async (band: BandTsType): Promise<any> => {
     try {
       if (band.genresIds) {
         const result = [];
@@ -103,6 +151,41 @@ class BandsServices {
 
           if (response) {
             result.push(genresServices.parseResponse(response));
+          }
+        }
+
+        return result;
+      }
+    } catch (err) {}
+  };
+
+  private getAdditionalMembersData = async (band: BandTsType): Promise<any> => {
+    try {
+      if (band.membersIds) {
+        const result = [];
+        const membersIds = band.membersIds;
+
+        for (let i = 0; i < membersIds.length; i++) {
+          const url = process.env.ARTISTS_URL + `/${membersIds[i]}`;
+          const response = await (await axios.get(url)).data;
+
+          if (response) {
+            const correctArtistData = await artistsServices.getArtist(
+              undefined,
+              {
+                id: membersIds[i],
+              }
+            );
+
+            const correctMember = {
+              id: correctArtistData.id,
+              firstName: correctArtistData.firstName,
+              secondName: correctArtistData.secondName,
+              middleName: correctArtistData.middleName,
+              instruments: correctArtistData.instruments,
+            };
+
+            result.push(correctMember);
           }
         }
 
