@@ -215,7 +215,11 @@ class ArtistsServices {
           const response = await (await axios.get(url)).data;
 
           if (response) {
-            result.push(bandsServices.parseResponse(response));
+            const correctBand = await bandsServices.getBand(undefined, {
+              id: bandsIds[i],
+            });
+
+            result.push(correctBand);
           }
         }
 
