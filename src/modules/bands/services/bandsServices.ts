@@ -139,6 +139,52 @@ class BandsServices {
     }
   };
 
+  public updateBand = async (
+    _parent: undefined,
+    args: BandTsType
+  ): Promise<BandTsType> => {
+    try {
+      const url = process.env.BANDS_URL + `/${args.id}`;
+
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const correctArgs = { ...args };
+
+      correctArgs.members = await this.getAdditionalMembersData(correctArgs);
+
+      delete correctArgs.membersIds;
+
+      const response = await (
+        await axios.put(url, correctArgs, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response) {
+        const result = { ...response };
+
+        result.genres = await this.getAdditionalGenresData(result);
+        delete result.genresIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw wrongIdError;
+      }
+    } catch (err) {
+      if (err === authorizationError || err === wrongIdError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
+    }
+  };
+
   private getAdditionalGenresData = async (band: BandTsType): Promise<any> => {
     try {
       if (band.genresIds) {

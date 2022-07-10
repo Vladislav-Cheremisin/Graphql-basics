@@ -36,6 +36,15 @@ const bandsSchema = /* GraphQL */ `
       website: String
       genresIds: [String]
     ): Band
+
+    updateBand(
+      id: ID!
+      name: String
+      origin: String
+      membersIds: [String]
+      website: String
+      genresIds: [String]
+    ): Band
   }
 `;
 
