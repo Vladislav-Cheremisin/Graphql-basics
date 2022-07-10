@@ -10,8 +10,16 @@ const tracksSchema = /* GraphQL */ `
     genres: [Genre]
   }
 
+  type Tracks {
+    items: [Track]
+    limit: Int
+    offset: Int
+    total: Int
+  }
+
   type Query {
     track(id: ID!): Track
+    tracks(limit: Int = 5, offset: Int = 0): Tracks
   }
 `;
 

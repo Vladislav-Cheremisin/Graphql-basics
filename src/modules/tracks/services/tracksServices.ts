@@ -1,9 +1,11 @@
 import axios from "axios";
 
 import { IdArgs } from "../../../generalTsTypes";
+import { PaginationArgs } from "../../../generalTsTypes";
 import { TrackTsType, TracksTsType } from "../tracksTsTypes";
 import genresServices from "../../genres/services/genresServices";
 import bandsServices from "../../bands/services/bandsServices";
+import artistsServices from "../../artists/services/artistsServices";
 
 import {
   wrongIdError,
@@ -11,8 +13,6 @@ import {
   envError,
   incorrectDataError,
 } from "../../../errors";
-import artistsServices from "../../artists/services/artistsServices";
-
 class TracksServices {
   public getTrack = async (
     _parent: undefined,
@@ -43,6 +43,59 @@ class TracksServices {
       } else {
         throw err;
       }
+    }
+  };
+
+  public getTracks = async (
+    _parent: undefined,
+    args: PaginationArgs
+  ): Promise<TracksTsType> => {
+    try {
+      const url = process.env.TRACKS_URL;
+
+      if (typeof url === "string") {
+        const response = await (
+          await axios.get(url, {
+            params: {
+              limit: args.limit,
+              offset: args.offset,
+            },
+          })
+        ).data;
+
+        const correctTracks = response.items.map((track: TrackTsType) =>
+          this.parseResponse(track)
+        );
+
+        for (let i = 0; i < correctTracks.length; i++) {
+          correctTracks[i].genres = await this.getAdditionalGenresData(
+            correctTracks[i]
+          );
+          correctTracks[i].bands = await this.getAdditionalBandsData(
+            correctTracks[i]
+          );
+          correctTracks[i].artists = await this.getAdditionalArtistData(
+            correctTracks[i]
+          );
+
+          delete correctTracks[i].genresIds;
+          delete correctTracks[i].bandsIds;
+          delete correctTracks[i].artistsIds;
+        }
+
+        const result: TracksTsType = {
+          items: correctTracks,
+          limit: response.limit,
+          offset: response.offset,
+          total: response.total,
+        };
+
+        return result;
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      throw err;
     }
   };
 
