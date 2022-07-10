@@ -111,6 +111,40 @@ class GenresServices {
     }
   };
 
+  public updateGenre = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<GenreTsType> => {
+    try {
+      const url = process.env.GENRES_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.put(url, args, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response) {
+        return this.parseResponse(response);
+      } else {
+        throw wrongIdError;
+      }
+    } catch (err) {
+      if (err === authorizationError || err === wrongIdError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
+    }
+  };
+
   private parseResponse = (res: GenreTsType): GenreTsType => {
     const result = { ...res, id: res._id };
 

@@ -7,6 +7,7 @@ const genresResolvers = {
   },
   Mutation: {
     createGenre: genresServices.createGenre,
+    updateGenre: genresServices.updateGenre,
   },
 };
 

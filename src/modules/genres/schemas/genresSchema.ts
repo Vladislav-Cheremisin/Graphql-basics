@@ -26,6 +26,14 @@ const genresSchema = /* GraphQL */ `
       description: String
       country: String
     ): Genre
+
+    updateGenre(
+      id: ID!
+      name: String
+      year: Int
+      description: String
+      country: String
+    ): Genre
   }
 `;
 
