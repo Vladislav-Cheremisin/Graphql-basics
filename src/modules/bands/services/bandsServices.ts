@@ -46,6 +46,51 @@ class BandsServices {
     }
   };
 
+  public getBands = async (
+    _parent: undefined,
+    args: PaginationArgs
+  ): Promise<BandsTsType> => {
+    try {
+      const url = process.env.BANDS_URL;
+
+      if (typeof url === "string") {
+        const response = await (
+          await axios.get(url, {
+            params: {
+              limit: args.limit,
+              offset: args.offset,
+            },
+          })
+        ).data;
+
+        const correctArtists = response.items.map((band: BandTsType) =>
+          this.parseResponse(band)
+        );
+
+        for (let i = 0; i < correctArtists.length; i++) {
+          correctArtists[i].genres = await this.getAdditionalData(
+            correctArtists[i]
+          );
+
+          delete correctArtists[i].genresIds;
+        }
+
+        const result: BandsTsType = {
+          items: correctArtists,
+          limit: response.limit,
+          offset: response.offset,
+          total: response.total,
+        };
+
+        return result;
+      } else {
+        throw envError;
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
   private getAdditionalData = async (band: BandTsType): Promise<any> => {
     try {
       if (band.genresIds) {

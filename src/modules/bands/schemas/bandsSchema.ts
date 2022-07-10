@@ -25,6 +25,7 @@ const bandsSchema = /* GraphQL */ `
 
   type Query {
     band(id: ID!): Band
+    bands(limit: Int = 5, offset: Int = 0): Bands
   }
 `;
 
