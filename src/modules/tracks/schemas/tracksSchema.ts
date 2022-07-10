@@ -32,6 +32,17 @@ const tracksSchema = /* GraphQL */ `
       released: Int
       genresIds: [String]
     ): Track
+
+    updateTrack(
+      id: ID!
+      title: String
+      albumId: String
+      artistsIds: [String]
+      bandsIds: [String]
+      duration: Int
+      released: Int
+      genresIds: [String]
+    ): Track
   }
 `;
 

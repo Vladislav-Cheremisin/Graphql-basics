@@ -145,6 +145,50 @@ class TracksServices {
     }
   };
 
+  public updateTrack = async (
+    _parent: undefined,
+    args: IdArgs
+  ): Promise<TrackTsType> => {
+    try {
+      const url = process.env.TRACKS_URL + `/${args.id}`;
+      const token = jwtOps.getJwtToken();
+
+      if (!token) {
+        throw authorizationError;
+      }
+
+      const response = await (
+        await axios.put(url, args, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      ).data;
+
+      if (response) {
+        const result = { ...response };
+
+        result.bands = await this.getAdditionalBandsData(result);
+        result.artists = await this.getAdditionalArtistData(result);
+        result.genres = await this.getAdditionalGenresData(result);
+
+        delete result.bandsIds;
+        delete result.artistsIds;
+        delete result.genresIds;
+
+        return this.parseResponse(result);
+      } else {
+        throw wrongIdError;
+      }
+    } catch (err) {
+      if (err === authorizationError || err === wrongIdError) {
+        throw err;
+      } else {
+        throw incorrectDataError;
+      }
+    }
+  };
+
   private getAdditionalBandsData = async (track: TrackTsType): Promise<any> => {
     try {
       if (track.bandsIds) {
